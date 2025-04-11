@@ -330,37 +330,8 @@ func (s *ServerGroup) loadTargetGroupMap(targetGroupMap map[string][]*targetgrou
 func (s *ServerGroup) ApplyConfig(cfg *Config) error {
 	s.Cfg = cfg
 
-	// Copy/paste from upstream prometheus/common until https://github.com/prometheus/common/issues/144 is resolved
-	tlsConfig, err := config_util.NewTLSConfig(&cfg.HTTPConfig.HTTPConfig.TLSConfig)
-	if err != nil {
-		return errors.Wrap(err, "error loading TLS client config")
-	}
-	// The only timeout we care about is the configured scrape timeout.
-	// It is applied on request. So we leave out any timings here.
-	var rt http.RoundTripper = &http.Transport{
-		Proxy:               http.ProxyURL(cfg.HTTPConfig.HTTPConfig.ProxyURL.URL),
-		MaxIdleConns:        cfg.MaxIdleConns,
-		MaxIdleConnsPerHost: cfg.MaxIdleConnsPerHost, // see https://github.com/golang/go/issues/13801
-		DisableKeepAlives:   false,
-		TLSClientConfig:     tlsConfig,
-		// 5 minutes is typically above the maximum sane scrape interval. So we can
-		// use keepalive for all configurations.
-		IdleConnTimeout:       cfg.IdleConnTimeout,
-		DialContext:           (&net.Dialer{Timeout: cfg.HTTPConfig.DialTimeout}).DialContext,
-		ResponseHeaderTimeout: cfg.Timeout,
-	}
-
-	// If a bearer token is provided, create a round tripper that will set the
-	// Authorization header correctly on each request.
-	if len(cfg.HTTPConfig.HTTPConfig.BearerToken) > 0 {
-		rt = config_util.NewAuthorizationCredentialsRoundTripper("Bearer", cfg.HTTPConfig.HTTPConfig.BearerToken, rt)
-	} else if len(cfg.HTTPConfig.HTTPConfig.BearerTokenFile) > 0 {
-		rt = config_util.NewAuthorizationCredentialsFileRoundTripper("Bearer", cfg.HTTPConfig.HTTPConfig.BearerTokenFile, rt)
-	}
-
-	if cfg.HTTPConfig.HTTPConfig.BasicAuth != nil {
-		rt = config_util.NewBasicAuthRoundTripper(cfg.HTTPConfig.HTTPConfig.BasicAuth.Username, cfg.HTTPConfig.HTTPConfig.BasicAuth.Password, cfg.HTTPConfig.HTTPConfig.BasicAuth.PasswordFile, rt)
-	}
+	rt, err := config_util.NewRoundTripperFromConfig(s.Cfg.HTTPConfig.HTTPConfig, "",
+		config_util.WithDialContextFunc((&net.Dialer{Timeout: cfg.HTTPConfig.DialTimeout}).DialContext))
 
 	// SigV4
 	if cfg.HTTPConfig.SigV4 != nil {
