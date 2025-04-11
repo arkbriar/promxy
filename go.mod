@@ -17,12 +17,14 @@ require (
 	github.com/prometheus/client_golang v1.15.1-0.20230416124134-0392dffd0e08
 	github.com/prometheus/client_model v0.4.0
 	github.com/prometheus/common v0.42.0
+	github.com/prometheus/common/sigv4 v0.1.0
 	github.com/prometheus/exporter-toolkit v0.7.3
 	github.com/prometheus/prometheus v1.8.2-0.20210707132820-dc8f50559534
 	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.8.4
 	go.uber.org/atomic v1.10.0
 	golang.org/x/time v0.0.0-20220922220347-f3bd1da661af
+	google.golang.org/api v0.128.0
 	gopkg.in/yaml.v2 v2.4.0
 	k8s.io/klog v1.0.0
 	k8s.io/utils v0.0.0-20220210201930-3a6ce19ff2f9
@@ -127,7 +129,6 @@ require (
 	github.com/opencontainers/image-spec v1.0.2 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prometheus/alertmanager v0.24.0 // indirect
-	github.com/prometheus/common/sigv4 v0.1.0 // indirect
 	github.com/prometheus/procfs v0.9.0 // indirect
 	github.com/rogpeppe/go-internal v1.12.0 // indirect
 	github.com/scaleway/scaleway-sdk-go v1.0.0-beta.9 // indirect
@@ -153,7 +154,6 @@ require (
 	golang.org/x/term v0.29.0 // indirect
 	golang.org/x/text v0.22.0 // indirect
 	golang.org/x/tools v0.21.1-0.20240508182429-e35e4ccd0d2d // indirect
-	google.golang.org/api v0.128.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20230711160842-782d3b101e98 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20230711160842-782d3b101e98 // indirect

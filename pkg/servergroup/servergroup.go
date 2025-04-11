@@ -3,6 +3,7 @@ package servergroup
 import (
 	"context"
 	"fmt"
+	"google.golang.org/api/option"
 	"net"
 	"net/http"
 	"net/url"
@@ -18,12 +19,14 @@ import (
 	config_util "github.com/prometheus/common/config"
 	"github.com/prometheus/common/model"
 	"github.com/prometheus/common/promlog"
+	"github.com/prometheus/common/sigv4"
 	"github.com/prometheus/prometheus/discovery"
 	"github.com/prometheus/prometheus/discovery/targetgroup"
 	"github.com/prometheus/prometheus/model/labels"
 	"github.com/prometheus/prometheus/model/relabel"
 	"github.com/prometheus/prometheus/storage/remote"
 	"github.com/sirupsen/logrus"
+	googlehttp "google.golang.org/api/transport/http"
 
 	"github.com/jacksontj/promxy/pkg/middleware"
 	"github.com/jacksontj/promxy/pkg/promclient"
@@ -355,6 +358,29 @@ func (s *ServerGroup) ApplyConfig(cfg *Config) error {
 
 	if cfg.HTTPConfig.HTTPConfig.BasicAuth != nil {
 		rt = config_util.NewBasicAuthRoundTripper(cfg.HTTPConfig.HTTPConfig.BasicAuth.Username, cfg.HTTPConfig.HTTPConfig.BasicAuth.Password, cfg.HTTPConfig.HTTPConfig.BasicAuth.PasswordFile, rt)
+	}
+
+	// SigV4
+	if cfg.HTTPConfig.SigV4 != nil {
+		rt, err = sigv4.NewSigV4RoundTripper(cfg.HTTPConfig.SigV4, rt)
+		if err != nil {
+			return errors.Wrap(err, "error creating sigv4 round tripper")
+		}
+	}
+
+	// Google API
+	if cfg.HTTPConfig.GoogleAPI != nil {
+		if cfg.HTTPConfig.GoogleAPI.GoogleApplicationCredentials != "" {
+			rt, err = googlehttp.NewTransport(s.ctx, rt, option.WithCredentialsJSON([]byte(cfg.HTTPConfig.GoogleAPI.GoogleApplicationCredentials)))
+			if err != nil {
+				return errors.Wrap(err, "error creating google api transport with credentials")
+			}
+		} else if cfg.HTTPConfig.GoogleAPI.GoogleApplicationCredentialsPath != "" {
+			rt, err = googlehttp.NewTransport(s.ctx, rt, option.WithCredentialsFile(cfg.HTTPConfig.GoogleAPI.GoogleApplicationCredentialsPath))
+			if err != nil {
+				return errors.Wrap(err, "error creating google api transport with credentials file")
+			}
+		}
 	}
 
 	s.client = &http.Client{Transport: rt}

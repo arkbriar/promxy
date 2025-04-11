@@ -2,6 +2,7 @@ package servergroup
 
 import (
 	"fmt"
+	"github.com/prometheus/common/sigv4"
 	"time"
 
 	config_util "github.com/prometheus/common/config"
@@ -246,10 +247,17 @@ func (c *Config) MarshalYAML() (interface{}, error) {
 	return discovery.MarshalYAMLWithInlineConfigs(c)
 }
 
+type GoogleAPIConfig struct {
+	GoogleApplicationCredentials     string `yaml:"google_application_credentials,omitempty"`
+	GoogleApplicationCredentialsPath string `json:"google_application_credentials_path,omitempty"`
+}
+
 // HTTPClientConfig extends prometheus' HTTPClientConfig
 type HTTPClientConfig struct {
 	DialTimeout time.Duration                `yaml:"dial_timeout"`
 	HTTPConfig  config_util.HTTPClientConfig `yaml:",inline"`
+	SigV4       *sigv4.SigV4Config           `yaml:"sigv4,omitempty"`
+	GoogleAPI   *GoogleAPIConfig             `yaml:"google_api,omitempty"`
 }
 
 // RelativeTimeRangeConfig configures durations relative from "now" to define
