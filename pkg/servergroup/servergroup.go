@@ -21,12 +21,12 @@ import (
 	config_util "github.com/prometheus/common/config"
 	"github.com/prometheus/common/model"
 	"github.com/prometheus/common/promlog"
-	"github.com/prometheus/common/sigv4"
 	"github.com/prometheus/prometheus/discovery"
 	"github.com/prometheus/prometheus/discovery/targetgroup"
 	"github.com/prometheus/prometheus/model/labels"
 	"github.com/prometheus/prometheus/model/relabel"
 	"github.com/prometheus/prometheus/storage/remote"
+	"github.com/prometheus/sigv4"
 	"github.com/sirupsen/logrus"
 	googlehttp "google.golang.org/api/transport/http"
 

@@ -49,9 +49,10 @@ github.com/armon/go-metrics
 # github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d
 ## explicit; go 1.13
 github.com/asaskevich/govalidator
-# github.com/aws/aws-sdk-go v1.44.45
-## explicit; go 1.11
+# github.com/aws/aws-sdk-go v1.55.6
+## explicit; go 1.19
 github.com/aws/aws-sdk-go/aws
+github.com/aws/aws-sdk-go/aws/auth/bearer
 github.com/aws/aws-sdk-go/aws/awserr
 github.com/aws/aws-sdk-go/aws/awsutil
 github.com/aws/aws-sdk-go/aws/client
@@ -92,6 +93,7 @@ github.com/aws/aws-sdk-go/service/ec2
 github.com/aws/aws-sdk-go/service/lightsail
 github.com/aws/aws-sdk-go/service/sso
 github.com/aws/aws-sdk-go/service/sso/ssoiface
+github.com/aws/aws-sdk-go/service/ssooidc
 github.com/aws/aws-sdk-go/service/sts
 github.com/aws/aws-sdk-go/service/sts/stsiface
 # github.com/beorn7/perks v1.0.1
@@ -579,6 +581,9 @@ github.com/prometheus/prometheus/util/treecache
 github.com/prometheus/prometheus/web
 github.com/prometheus/prometheus/web/api/v1
 github.com/prometheus/prometheus/web/ui
+# github.com/prometheus/sigv4 v0.0.0-00010101000000-000000000000 => github.com/arkbriar/sigv4 v0.0.0-20250411104034-93e9e6cc318c
+## explicit; go 1.21
+github.com/prometheus/sigv4
 # github.com/rogpeppe/go-internal v1.12.0
 ## explicit; go 1.20
 # github.com/scaleway/scaleway-sdk-go v1.0.0-beta.9
@@ -605,9 +610,10 @@ github.com/sirupsen/logrus
 # github.com/spf13/pflag v1.0.5
 ## explicit; go 1.12
 github.com/spf13/pflag
-# github.com/stretchr/testify v1.8.4
-## explicit; go 1.20
+# github.com/stretchr/testify v1.10.0
+## explicit; go 1.17
 github.com/stretchr/testify/assert
+github.com/stretchr/testify/assert/yaml
 github.com/stretchr/testify/require
 # github.com/vultr/govultr/v2 v2.17.2
 ## explicit; go 1.17
@@ -1165,3 +1171,4 @@ sigs.k8s.io/yaml
 # github.com/prometheus/prometheus => github.com/jacksontj/prometheus v1.8.1-0.20230330151148-3f6bd0d411b6
 # github.com/golang/glog => github.com/kubermatic/glog-gokit v0.0.0-20181129151237-8ab7e4c2d352
 # k8s.io/klog => github.com/simonpasquier/klog-gokit/v3 v3.0.0
+# github.com/prometheus/sigv4 => github.com/arkbriar/sigv4 v0.0.0-20250411104034-93e9e6cc318c

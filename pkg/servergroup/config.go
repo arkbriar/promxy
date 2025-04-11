@@ -2,11 +2,11 @@ package servergroup
 
 import (
 	"fmt"
-	"github.com/prometheus/common/sigv4"
 	"time"
 
 	config_util "github.com/prometheus/common/config"
 	"github.com/prometheus/common/model"
+	"github.com/prometheus/sigv4"
 
 	"github.com/jacksontj/promxy/pkg/promclient"
 
