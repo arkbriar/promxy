@@ -3,10 +3,12 @@ package servergroup
 import (
 	"context"
 	"fmt"
+	"golang.org/x/oauth2/jwt"
 	"google.golang.org/api/option"
 	"net"
 	"net/http"
 	"net/url"
+	"os"
 	"path"
 	"strings"
 	"sync/atomic"
@@ -380,6 +382,29 @@ func (s *ServerGroup) ApplyConfig(cfg *Config) error {
 			if err != nil {
 				return errors.Wrap(err, "error creating google api transport with credentials file")
 			}
+		} else if cfg.HTTPConfig.GoogleAPI.JWT != nil {
+			privateKey := []byte(cfg.HTTPConfig.GoogleAPI.JWT.PrivateKey)
+			var err error
+			if len(privateKey) == 0 {
+				privateKey, err = os.ReadFile(cfg.HTTPConfig.GoogleAPI.JWT.PrivateKeyPath)
+				if err != nil {
+					return errors.Wrap(err, "error reading private key file")
+				}
+			}
+			config := jwt.Config{
+				Email:      cfg.HTTPConfig.GoogleAPI.JWT.Email,
+				PrivateKey: privateKey,
+				Scopes:     cfg.HTTPConfig.GoogleAPI.JWT.Scopes,
+				TokenURL:   cfg.HTTPConfig.GoogleAPI.JWT.TokenURL,
+				Expires:    time.Hour,
+			}
+			tokenSrc := config.TokenSource(s.ctx)
+			rt, err = googlehttp.NewTransport(s.ctx, rt, option.WithTokenSource(tokenSrc))
+			if err != nil {
+				return errors.Wrap(err, "error creating google api transport with jwt")
+			}
+		} else {
+			return errors.New("google api transport requires either credentials or jwt config")
 		}
 	}
 

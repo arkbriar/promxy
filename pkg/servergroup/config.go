@@ -247,9 +247,27 @@ func (c *Config) MarshalYAML() (interface{}, error) {
 	return discovery.MarshalYAMLWithInlineConfigs(c)
 }
 
+type GoogleAPIJWTTokenSource struct {
+	// TokenURL is the endpoint required to complete the 2-legged JWT flow.
+	TokenURL string `yaml:"token_url,omitempty"`
+
+	// Scopes is a list of requested permission scopes.
+	Scopes []string `yaml:"scopes,omitempty"`
+
+	// Email is the service account email address.
+	Email string `yaml:"email,omitempty"`
+
+	// PrivateKey is the service account private key.
+	PrivateKey string `yaml:"private_key,omitempty"`
+
+	// PrivateKeyPath is the path to the service account private key file.
+	PrivateKeyPath string `yaml:"private_key_path,omitempty"`
+}
+
 type GoogleAPIConfig struct {
-	GoogleApplicationCredentials     string `yaml:"google_application_credentials,omitempty"`
-	GoogleApplicationCredentialsPath string `json:"google_application_credentials_path,omitempty"`
+	GoogleApplicationCredentials     string                   `yaml:"google_application_credentials,omitempty"`
+	GoogleApplicationCredentialsPath string                   `json:"google_application_credentials_path,omitempty"`
+	JWT                              *GoogleAPIJWTTokenSource `yaml:"jwt,omitempty"`
 }
 
 // HTTPClientConfig extends prometheus' HTTPClientConfig
