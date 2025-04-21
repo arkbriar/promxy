@@ -152,10 +152,9 @@ func (c *LabelFilterClient) Sync(ctx context.Context) error {
 
 	for _, label := range c.cfg.DynamicLabels {
 		labelFilter := make(map[string]struct{})
-		// TODO: warn?
 		vals, _, err := c.LabelValues(ctx, label, nil, model.Time(0).Time(), model.Now().Time())
 		if err != nil {
-			return err
+			logrus.Warnf("error syncing label_filter from downstream: %#v", err)
 		}
 		for _, v := range vals {
 			labelFilter[string(v)] = struct{}{}
