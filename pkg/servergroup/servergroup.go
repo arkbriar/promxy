@@ -333,11 +333,15 @@ func (s *ServerGroup) ApplyConfig(cfg *Config) error {
 
 	rt, err := config_util.NewRoundTripperFromConfig(s.Cfg.HTTPConfig.HTTPConfig, "",
 		config_util.WithDialContextFunc((&net.Dialer{Timeout: cfg.HTTPConfig.DialTimeout}).DialContext))
+	if err != nil {
+		return errors.Wrap(err, "error creating round tripper")
+	}
 
 	// SigV4
 	if cfg.HTTPConfig.SigV4 != nil {
+		sigV4, rtNow := *cfg.HTTPConfig.SigV4, rt
 		rt = promhttputil.NewDeferredRoundTripper(func() (http.RoundTripper, error) {
-			return sigv4.NewSigV4RoundTripper(cfg.HTTPConfig.SigV4, rt)
+			return sigv4.NewSigV4RoundTripper(&sigV4, rtNow)
 		})
 	}
 
