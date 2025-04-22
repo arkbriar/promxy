@@ -343,6 +343,11 @@ func (cfg *frozenConfig) Get(data []byte, path ...interface{}) Any {
 }
 
 func (cfg *frozenConfig) Unmarshal(data []byte, v interface{}) error {
+	// Give an empty byte slice to the iterator if data is nil.
+	if data == nil {
+		data = []byte("null")
+	}
+
 	iter := cfg.BorrowIterator(data)
 	defer cfg.ReturnIterator(iter)
 	iter.ReadVal(v)
