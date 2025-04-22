@@ -3,6 +3,7 @@ package servergroup
 import (
 	"context"
 	"fmt"
+	"github.com/jacksontj/promxy/pkg/promhttputil"
 	"golang.org/x/oauth2/jwt"
 	"google.golang.org/api/option"
 	"net"
@@ -335,10 +336,9 @@ func (s *ServerGroup) ApplyConfig(cfg *Config) error {
 
 	// SigV4
 	if cfg.HTTPConfig.SigV4 != nil {
-		rt, err = sigv4.NewSigV4RoundTripper(cfg.HTTPConfig.SigV4, rt)
-		if err != nil {
-			return errors.Wrap(err, "error creating sigv4 round tripper")
-		}
+		rt = promhttputil.NewDeferredRoundTripper(func() (http.RoundTripper, error) {
+			return sigv4.NewSigV4RoundTripper(cfg.HTTPConfig.SigV4, rt)
+		})
 	}
 
 	// Google API
