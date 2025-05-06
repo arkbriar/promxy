@@ -137,6 +137,11 @@ func (c *AddLabelClient) LabelValues(ctx context.Context, label string, matchers
 		return nil, w, err
 	}
 
+	// if we don't have any values, then we don't have anything.
+	if len(val) == 0 {
+		return val, w, nil
+	}
+
 	// do we have labels that match in our state
 	if value, ok := c.Labels[model.LabelName(label)]; ok {
 		return MergeLabelValues(val, model.LabelValues{value}), w, nil
