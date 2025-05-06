@@ -137,14 +137,22 @@ func (c *AddLabelClient) LabelValues(ctx context.Context, label string, matchers
 		return nil, w, err
 	}
 
-	// if we don't have any values, then we don't have anything.
 	if len(val) == 0 {
-		return val, w, nil
+		// if we don't have any values, we need to check if we have any time series.
+		series, w, err := c.API.Series(context.WithValue(ctx, "limit", 1), matchers, startTime, endTime)
+		if err != nil {
+			return nil, w, err
+		}
+		// if we don't have any series, we need to return nil
+		if len(series) == 0 {
+			return nil, w, nil
+		}
 	}
 
-	// do we have labels that match in our state
+	// do we have labels that match in our state.
 	if value, ok := c.Labels[model.LabelName(label)]; ok {
-		return MergeLabelValues(val, model.LabelValues{value}), w, nil
+		// if we do, we need to override the original values
+		return model.LabelValues{value}, w, nil
 	}
 	return val, w, nil
 }

@@ -475,7 +475,7 @@ github.com/pmezard/go-difflib/difflib
 # github.com/prometheus/alertmanager v0.24.0
 ## explicit; go 1.16
 github.com/prometheus/alertmanager/api/v2/models
-# github.com/prometheus/client_golang v1.15.1-0.20230416124134-0392dffd0e08
+# github.com/prometheus/client_golang v1.15.1-0.20230416124134-0392dffd0e08 => github.com/arkbriar/client_golang v0.0.0-20250506091231-c0e153878c80
 ## explicit; go 1.17
 github.com/prometheus/client_golang/api
 github.com/prometheus/client_golang/api/prometheus/v1
@@ -1173,3 +1173,4 @@ sigs.k8s.io/yaml
 # k8s.io/klog => github.com/simonpasquier/klog-gokit/v3 v3.0.0
 # github.com/prometheus/sigv4 => github.com/arkbriar/sigv4 v0.0.0-20250411104034-93e9e6cc318c
 # github.com/json-iterator/go => github.com/arkbriar/json-iterator-go v0.0.0-20250422101459-17b554c4c291
+# github.com/prometheus/client_golang => github.com/arkbriar/client_golang v0.0.0-20250506091231-c0e153878c80

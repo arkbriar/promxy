@@ -1152,6 +1152,10 @@ func (h *httpAPI) Series(ctx context.Context, matches []string, startTime, endTi
 		q.Set("end", formatTime(endTime))
 	}
 
+	if limit, ok := ctx.Value("limit").(int); ok {
+		q.Set("limit", strconv.Itoa(limit))
+	}
+
 	_, body, warnings, err := h.client.DoGetFallback(ctx, u, q)
 	if err != nil {
 		return nil, warnings, err
@@ -1425,7 +1429,9 @@ func (h *apiClientImpl) DoGetFallback(ctx context.Context, u *url.URL, args url.
 	req.Header["Idempotency-Key"] = nil
 
 	resp, body, warnings, err := h.Do(ctx, req)
-	if resp != nil && (resp.StatusCode == http.StatusMethodNotAllowed || resp.StatusCode == http.StatusNotImplemented) {
+	if resp != nil && (resp.StatusCode == http.StatusBadRequest ||
+		resp.StatusCode == http.StatusMethodNotAllowed ||
+		resp.StatusCode == http.StatusNotImplemented) {
 		u.RawQuery = encodedArgs
 		req, err = http.NewRequest(http.MethodGet, u.String(), nil)
 		if err != nil {

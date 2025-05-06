@@ -183,3 +183,5 @@ replace k8s.io/klog => github.com/simonpasquier/klog-gokit/v3 v3.0.0
 replace github.com/prometheus/sigv4 => github.com/arkbriar/sigv4 v0.0.0-20250411104034-93e9e6cc318c
 
 replace github.com/json-iterator/go => github.com/arkbriar/json-iterator-go v0.0.0-20250422101459-17b554c4c291
+
+replace github.com/prometheus/client_golang => github.com/arkbriar/client_golang v0.0.0-20250506091231-c0e153878c80
