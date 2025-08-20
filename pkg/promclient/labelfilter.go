@@ -152,7 +152,8 @@ func (c *LabelFilterClient) Sync(ctx context.Context) error {
 
 	for _, label := range c.cfg.DynamicLabels {
 		labelFilter := make(map[string]struct{})
-		vals, _, err := c.LabelValues(ctx, label, nil, model.Time(0).Time(), model.Now().Time())
+		// Set the start time to 1s after the epoch to work around the VM issue.
+		vals, _, err := c.LabelValues(ctx, label, nil, model.TimeFromUnix(1).Time(), model.Now().Time())
 		if err != nil {
 			logrus.Warnf("error syncing label_filter from downstream: %#v", err)
 		}
