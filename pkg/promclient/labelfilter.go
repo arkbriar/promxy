@@ -152,8 +152,13 @@ func (c *LabelFilterClient) Sync(ctx context.Context) error {
 
 	for _, label := range c.cfg.DynamicLabels {
 		labelFilter := make(map[string]struct{})
-		// Set the start time to 1s after the epoch to work around the VM issue.
-		vals, _, err := c.LabelValues(ctx, label, nil, model.TimeFromUnix(1).Time(), model.Now().Time())
+
+		// Pull the values for this label from the downstream over the last 90 days.
+		// This is to avoid limitations of some Prometheus distributions which don't
+		// support LabelValues with a large time range.
+		endTime := time.Now()
+		startTime := endTime.Add(-time.Hour * 24 * 90)
+		vals, _, err := c.LabelValues(ctx, label, nil, startTime, endTime)
 		if err != nil {
 			logrus.Warnf("error syncing label_filter from downstream: %#v", err)
 		}
